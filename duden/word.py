@@ -157,6 +157,38 @@ class DudenWord():
         return sep_element.text.split('|')
 
     @property
+    def meaning_example(self):
+        """
+        Return the meaning structure, which can be string, list or a dict
+        """
+        section = self.soup.find('div', id='bedeutung') \
+                  or self.soup.find('div', id='bedeutungen')
+        if section is None:
+            return None
+        section = copy.copy(section)
+        #section.header.extract()
+
+        lst = []
+
+        for enum_text in section.find_all('div', class_='enumeration__text'):
+            # 1. remove pictures
+            for node in section.find_all('figure'):
+                node.extract()
+
+            # 2. keep defintion
+            map = {}
+            map['def'] = enum_text.text.strip()
+
+            # 3. keep example
+            example = recursively_extract(section, maxdepth=2, exfun=lambda x: x.text.strip())
+            map['example'] = example
+            lst.append(map)
+
+
+        return lst
+
+
+    @property
     def meaning_overview(self):
         """
         Return the meaning structure, which can be string, list or a dict
@@ -166,7 +198,8 @@ class DudenWord():
         if section is None:
             return None
         section = copy.copy(section)
-        section.header.extract()
+        #section.header.extract()
+
 
         # # 1. remove examples
         # for dl_node in section.find_all('dl', class_='note'):
@@ -185,7 +218,9 @@ class DudenWord():
 
         return section.text
         # return recursively_extract(
-        #     section, maxdepth=6, exfun=lambda x: x.text.strip())
+        #      section, maxdepth=6, exfun=lambda x: x.text.strip())
+
+
 
     @property
     def synonyms(self):
