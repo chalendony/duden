@@ -168,22 +168,24 @@ class DudenWord():
         section = copy.copy(section)
         section.header.extract()
 
-        # 1. remove examples
-        for dl_node in section.find_all('dl', class_='note'):
-            if True or dl_node.dt.text == 'Beispiele':
-                dl_node.extract()
-
-        # 2. remove grammar parts
-        for dl_node in section.find_all('dl', class_='tuple'):
-            if dl_node.dt.text in ['Grammatik', 'Gebrauch']:
-                dl_node.extract()
+        # # 1. remove examples
+        # for dl_node in section.find_all('dl', class_='note'):
+        #     if True or dl_node.dt.text == 'Beispiele':
+        #         #dl_node.extract()
+        #         pass
+        #
+        # # 2. remove grammar parts
+        # for dl_node in section.find_all('dl', class_='tuple'):
+        #     if dl_node.dt.text in ['Grammatik', 'Gebrauch']:
+        #         dl_node.extract()
 
         # 3. remove pictures
         for node in section.find_all('figure'):
             node.extract()
 
-        return recursively_extract(
-            section, maxdepth=2, exfun=lambda x: x.text.strip())
+        return section.text
+        # return recursively_extract(
+        #     section, maxdepth=6, exfun=lambda x: x.text.strip())
 
     @property
     def synonyms(self):
